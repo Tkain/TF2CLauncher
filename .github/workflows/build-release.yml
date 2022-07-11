@@ -14,4 +14,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: cargo build --release --verbose
+      run: cargo build --target i686-pc-windows-msvc --release --verbose
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Launcher (Windows, x86)
+        path: target/i686-pc-windows-msvc/tf2c_launcher.exe
