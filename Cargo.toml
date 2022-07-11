@@ -10,7 +10,7 @@ keyvalues-parser = "0.1.0"
 simple-error = "0.2.3"
 
 [dependencies.windows]
-version = "0.37.0"
+version = "0.38.0"
 features = [
     "alloc",
     "Win32_Foundation",
