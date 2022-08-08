@@ -1,9 +1,9 @@
 #![windows_subsystem = "windows"]
 
-use std::ffi::OsString;
-use std::mem::size_of;
 use std::path::{Path, PathBuf};
 use simple_error::{bail, SimpleError};
+use windows::core::PCWSTR;
+use windows::w;
 use windows::Win32::System::Registry::{HKEY_LOCAL_MACHINE, RegGetValueW, RRF_RT_REG_SZ};
 
 fn main() {
@@ -21,24 +21,21 @@ type ExtResult<T> = Result<T, Box<dyn std::error::Error>>;
 fn get_steam_path() -> ExtResult<PathBuf> {
 
     const MAX_PATH_LENGTH: usize = 260;
-
     let mut data = vec![0u16; MAX_PATH_LENGTH];
-    let mut size = (size_of::<u16>() * MAX_PATH_LENGTH) as u32;
 
     let query = unsafe { RegGetValueW(
         HKEY_LOCAL_MACHINE,
-        "SOFTWARE\\Valve\\Steam",
-        "InstallPath",
+        w!("SOFTWARE\\Valve\\Steam"),
+        w!("InstallPath"),
         RRF_RT_REG_SZ,
         std::ptr::null_mut(),
         data.as_mut_ptr() as *mut std::ffi::c_void,
-        &mut size as *mut u32
+        std::ptr::null_mut()
     ) };
 
     query.ok()?;
 
-    let length = (size as usize) / size_of::<u16>() - 1;
-    let string: OsString = std::os::windows::ffi::OsStringExt::from_wide(&data[..length]);
+    let string = unsafe { PCWSTR(data.as_ptr() as *const u16).to_string() }?;
     let path = PathBuf::from(string);
 
     path.metadata()?;
