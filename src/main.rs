@@ -16,9 +16,9 @@ fn main() {
         .spawn().expect("Unable to launch Source SDK executable");
 }
 
-type ExtResult<T> = Result<T, Box<dyn std::error::Error>>;
+type FlexResult<T> = Result<T, Box<dyn std::error::Error>>;
 
-fn get_steam_path() -> ExtResult<PathBuf> {
+fn get_steam_path() -> FlexResult<PathBuf> {
 
     const MAX_PATH_LENGTH: usize = 260;
     let mut data = vec![0u16; MAX_PATH_LENGTH];
@@ -43,7 +43,7 @@ fn get_steam_path() -> ExtResult<PathBuf> {
     Ok(path)
 }
 
-fn get_sdk_path(steam_path: &Path) -> ExtResult<PathBuf> {
+fn get_sdk_path(steam_path: &Path) -> FlexResult<PathBuf> {
 
     let libraries_path = steam_path.to_path_buf().join("config").join("libraryfolders.vdf");
     let libraries_string = std::fs::read_to_string(libraries_path)?;
