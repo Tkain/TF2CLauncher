@@ -21,7 +21,7 @@ type FlexResult<T> = Result<T, Box<dyn std::error::Error>>;
 fn get_steam_path() -> FlexResult<PathBuf> {
 
     const MAX_PATH_LENGTH: usize = 260;
-    let mut data = vec![0u16; MAX_PATH_LENGTH];
+    let mut data = [0u16; MAX_PATH_LENGTH];
 
     let query = unsafe { RegGetValueW(
         HKEY_LOCAL_MACHINE,
